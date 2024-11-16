@@ -1,0 +1,28 @@
+services:
+
+  app:
+    image: containerised-deployments-script:latest
+    build:
+      dockerfile: Dockerfile
+    environment:
+      - R_CONFIG_ACTIVE=local
+    depends_on:
+      - database
+
+  database: 
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=US_Elections_2018
+      - POSTGRES_USER=epidb
+      - POSTGRES_PASSWORD=____
+    restart: always
+    volumes:
+      - ./db/init/:/docker-entrypoint-initdb.d/
+      - ../data/2018-elections-unofficial:/var/lib/postgresql/csvs
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
+    external: false

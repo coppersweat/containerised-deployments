@@ -1,0 +1,5 @@
+default:
+  dbConnectionArgs: !expr list(drv = RPostgres::Postgres(), dbname = "US_Elections_2018", host = Sys.getenv("DB_HOST"), port = Sys.getenv("DB_PORT"), user = Sys.getenv("DB_USER"), password = Sys.getenv("DB_PASS"))
+
+local:
+  dbConnectionArgs: !expr list(drv = RPostgres::Postgres(), dbname = "US_Elections_2018", host = "r-script-database-1", port = 5432, user = "epidb", password = "____")
