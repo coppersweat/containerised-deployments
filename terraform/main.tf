@@ -67,7 +67,8 @@ module "security_group" {
       to_port     = 5432
       protocol    = "tcp"
       description = "PostgreSQL access from deployment environment"
-      cidr_blocks = "${chomp(data.http.my_ip.response_body)}/32"
+      cidr_blocks = "0.0.0.0/0"
+      # cidr_blocks = "${chomp(data.http.my_ip.response_body)}/32"
     },
   ]
   egress_rules = ["all-all"]

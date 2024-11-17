@@ -1,0 +1,5 @@
+{
+    "containerised-deployments-shiny": {
+        "image": ":containerised-deployments-script.containerised-deployments-script.2"
+    }
+}

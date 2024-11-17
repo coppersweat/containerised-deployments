@@ -79,3 +79,45 @@ docker tag containerised-deployments-script:latest 910733845259.dkr.ecr.ap-south
 docker push 910733845259.dkr.ecr.ap-southeast-2.amazonaws.com/containerised-deployments:r-script
 ```
 
+1. Create a Lightsail container service:
+
+```
+aws lightsail create-container-service --service-name containerised-deployments-shiny --power small --scale 1
+```
+
+2. Wait until it is ready:
+
+```
+echo "Waiting for the container service..."; while [[ "$state" != "READY" ]]; do state=$(aws lightsail get-container-services | jq -r '.containerServices[] | select( .containerServiceName | contains("containerised-deployments-script")) | .state'); echo $state; sleep 3; done; echo "The container service is ready!";
+```
+
+3. Push the Docker image to the newly created container service:
+
+```
+aws lightsail push-container-image --service-name containerised-deployments-script --label containerised-deployments-script --image containerised-deployments-script:latest --profile lightsail-cr
+```
+
+4. Create the container service deployment:
+
+```
+aws lightsail create-container-service-deployment --service-name containerised-deployments-script --containers file://containers.json
+```
+
+5. Wait until it is running:
+
+```
+echo "Waiting for the container service to run..."; while [[ "$state" != "RUNNING" ]]; do state=$(aws lightsail get-container-services | jq -r '.containerServices[] | select( .containerServiceName | contains("containerised-deployments-shiny")) | .state'); echo $state; sleep 3; done; echo "The container service is running!";
+```
+
+### Clean up resources
+
+```
+aws lightsail delete-container-service --service-name containerised-deployments-script
+aws lightsail get-container-services
+```
+
+
+## Reference
+
+- [How to Serve a Flask App with Amazon Lightsail Containers](https://aws.amazon.com/tutorials/serve-a-flask-app/)
+- [Deploy applications in AWS App Runner with GitHub Actions](https://aws.amazon.com/blogs/containers/deploy-applications-in-aws-app-runner-with-github-actions/)
